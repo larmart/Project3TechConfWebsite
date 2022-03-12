@@ -63,9 +63,21 @@ Complete a month cost analysis of each Azure resource to give an estimate total 
 
 | Azure Resource | Service Tier | Monthly Cost |
 | ------------ | ------------ | ------------ |
-| *Azure Postgres Database* |     |              |
-| *Azure Service Bus*   |         |              |
-| ...                   |         |              |
+| *Azure Postgres Database* | Single Server with Basic tier (Gen5 with 1 VCore, 5GB Storage, 7 Days Backup Retention) | 32.82 USD |
+| *Azure Service Bus* | Basic tier: 1 million messages per month | 0.05 USD |
+| *Azure App Service Plan* | F1: Free 1GB RAM 60min/day compute | 0.00 USD |
+| *Application Insights* | 5 GB per billing account per month included | 0.00 USD |
+| *Storage Account* | Standard Usage-based data storage pricing, Hot $0,0196 per GB and month | 0.02 USD |
+| *Azure Function App* | Consumption | 0,20 USD per million executions |
 
 ## Architecture Explanation
-This is a placeholder section where you can provide an explanation and reasoning for your architecture selection for both the Azure Web App and Azure Function.
+In this project a monolithic architecture was refactored to a much more modular cloud architecture - this has the following advantages: 
+1. Within the monolithic architecture the web application is not scalable, if the user load is increasing. After the migration to 
+   an Azure App Service, the Azure Function App and the Azure Postgres database now auto scaling is available for the different ressources.
+2. In the previous architecture the application was not cost-efficient, since resources have to be reserved for the peak load, but these 
+   are not used in normal operation with a smaller user load. For example the Azure Functions in this project use the consumption plan.
+   Costs are only incurred if the Azure Functions are used. 
+   Another example would be to adapt the service tier of the Azure App Service instead of buying new hardware for the on-premises solution.
+3. The monolithic architecture was slow in the case, if the admin sends out the notifications. The frontend user has to wait until the e-mails to
+   all attendees were sent out - also HTTP timeouts can extend the waiting time. This task is now migrated to a background job using an Azure Funtion App and
+   the user has a better experience, when using the frontend.
