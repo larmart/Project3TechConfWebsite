@@ -2,7 +2,7 @@ from app import app, db, queue_client
 from datetime import datetime
 from app.models import Attendee, Conference, Notification
 from flask import render_template, session, request, redirect, url_for, flash, make_response, session
-from azure.servicebus import Message
+from azure.servicebus import Message, QueueClient
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import logging
@@ -68,23 +68,17 @@ def notification():
             db.session.commit()
 
             ##################################################
-            ## TODO: Refactor This logic into an Azure Function
-            ## Code below will be replaced by a message queue
+            ## Use logic of an Azure Function
+            ## Add message to a queue
             #################################################
-            attendees = Attendee.query.all()
 
-            for attendee in attendees:
-                subject = '{}: {}'.format(attendee.first_name, notification.subject)
-                send_email(attendee.email, subject, notification.message)
+            queue_client = QueueClient.from_connection_string(
+                app.config.get('SERVICE_BUS_CONNECTION_STRING'), 
+                app.config.get('SERVICE_BUS_QUEUE_NAME'))
 
-            notification.completed_date = datetime.utcnow()
-            notification.status = 'Notified {} attendees'.format(len(attendees))
-            db.session.commit()
-            # TODO Call servicebus queue_client to enqueue notification ID
-
-            #################################################
-            ## END of TODO
-            #################################################
+            message = Message(str(notification.id))
+            # Call servicebus queue_client to enqueue notification ID
+            queue_client.send(message)
 
             return redirect('/Notifications')
         except :
@@ -92,16 +86,3 @@ def notification():
 
     else:
         return render_template('notification.html')
-
-
-
-def send_email(email, subject, body):
-    if not app.config.get('SENDGRID_API_KEY'):
-        message = Mail(
-            from_email=app.config.get('ADMIN_EMAIL_ADDRESS'),
-            to_emails=email,
-            subject=subject,
-            plain_text_content=body)
-
-        sg = SendGridAPIClient(app.config.get('SENDGRID_API_KEY'))
-        sg.send(message)
