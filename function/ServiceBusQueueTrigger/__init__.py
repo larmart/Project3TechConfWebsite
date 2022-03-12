@@ -20,7 +20,7 @@ def send_email(to_email, subject, message):
         plain_text_content = message)
 
     sg = SendGridAPIClient(sendgrid_api_key)
-    #sg.send(message)
+    sg.send(message)
     logging.info("Email was sent")
 
 def main(msg: func.ServiceBusMessage):
