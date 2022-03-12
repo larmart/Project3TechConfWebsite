@@ -20,7 +20,7 @@ def send_email(to_email, subject, message):
         plain_text_content = message)
 
     sg = SendGridAPIClient(sendgrid_api_key)
-    sg.send(message)
+    #sg.send(message)
     logging.info("Email was sent")
 
 def main(msg: func.ServiceBusMessage):
@@ -31,11 +31,11 @@ def main(msg: func.ServiceBusMessage):
 
     # Get connection to database
     # see https://www.psycopg.org/docs/usage.html
-    database_conn = psycopg2.connect(user="postgres@techconf-db-server",
-                                     password="dim@postgr55",
-                                     host="techconf-db-server.postgres.database.azure.com",
-                                     port="5432",
-                                     database="techconfdb")
+    database_conn = psycopg2.connect(user=os.environ['PostgresUser'],
+                                     password=os.environ['PostgresPassword'],
+                                     host=os.environ['PostgresHost'],
+                                     port=os.environ['PostgresPort'],
+                                     database=os.environ['PostgresDatabase'])
 
     # Open a cursor to perform database operations
     cur = database_conn.cursor()
