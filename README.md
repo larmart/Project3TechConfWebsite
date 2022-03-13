@@ -63,11 +63,11 @@ Complete a month cost analysis of each Azure resource to give an estimate total 
 
 | Azure Resource | Service Tier | Monthly Cost |
 | ------------ | ------------ | ------------ |
-| *Azure Postgres Database* | Single Server with Basic tier (Gen5 with 1 VCore, 5GB Storage, 7 Days Backup Retention) | 32.82 USD |
-| *Azure Service Bus* | Basic tier: 1 million messages per month | 0.05 USD |
-| *Azure App Service Plan* | F1: Free 1GB RAM 60min/day compute | 0.00 USD |
+| *Azure Postgres Database* | Single Server with Basic tier (Gen5 with 2 VCore, 50GB Storage, 7 Days Backup Retention) | 54.64 USD |
+| *Azure Service Bus* | Standard tier: 12.5 Ops/month | 10.00 USD |
+| *Azure App Service Plan* | P1V2: 210 ACU, 3,5GB RAM, DV2-Series | 81.03 USD |
 | *Application Insights* | 5 GB per billing account per month included | 0.00 USD |
-| *Storage Account* | Standard Usage-based data storage pricing, Hot $0,0196 per GB and month | 0.02 USD |
+| *Storage Account* | Standard Usage-based data storage GenPurposeV2 50GB, Hot Access Tier| 1.04 USD |
 | *Azure Function App* | Consumption | 0,20 USD per million executions |
 
 ## Architecture Explanation
